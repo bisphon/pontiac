@@ -16,12 +16,14 @@ Install these debian packages:
   - tcpdump
 
 Create and activate the virtualenv:
+
   ``virtualenv venv``
   
   ``source venv/bin/activate``
 
 Install required python packages inside the virtualenv
-  `pip install -r requirements.txt`
+
+  ``pip install -r requirements.txt``
 
 
 Interface
