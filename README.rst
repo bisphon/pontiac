@@ -70,20 +70,24 @@ Usage
 pontiac-server
 --------------
 To install and run the service:
-  ``sudo make install && make run``
-  you can also use the provided supervisor configuration.
 
-To send a request:
-  - notification:
-    ``echo '[{"type": "fcm", "tokens":[""], "title": "tt", "body": "bb", "badge": 1, "silent": false, "expiry_time": "2017-01-01 11:22:33", "custom_data": {}}]' | http -v --json post http://localhost:1234/notif``
-    ``echo '[{"type": "apns", "tokens":[""], "title": "tt", "body": "bb", "badge": 1, "silent": false, "expiry_time": "2017-01-01 11:22:33", "custom_data": {}}]' | http -v --json post http://localhost:1234/notif``
+  ``sudo make install && make run``
+
+You can also use the provided supervisor configuration.
+
+To send a notification request:
+
+  ``echo '[{"type": "fcm", "tokens":[""], "title": "tt", "body": "bb", "badge": 1, "silent": false, "expiry_time": "2017-01-01 11:22:33", "custom_data": {}}]' | http -v --json post http://localhost:1234/notif``
+  ``echo '[{"type": "apns", "tokens":[""], "title": "tt", "body": "bb", "badge": 1, "silent": false, "expiry_time": "2017-01-01 11:22:33", "custom_data": {}}]' | http -v --json post http://localhost:1234/notif``
 
 pontiac-cli
 -----------
 Sample usage for FCM:
+
   ``./pontiac-cli.py -v fcm --proxy "http://localhost:8080" --api-key "" --reg-id "" -- '{"message_title": "tiTle", "message_body": "bODy"}'``
 
 Sample usage for APNS
+
   ``./pontiac-cli.py -v apns --cert cert.pem --key key.pem --token "" -- '{"alert": "aLErt", "badge": 1, "sound": "default", "category": "mycat", "content-available": false, "custom-data": {"key1": "value1"}}'``
   ``./pontiac-cli.py -v apns --proxy "http://localhost:8080" --cert cert.pem --key key.pem --release --token "" -- '{"sound": null, "category": "mycat", "content-available": true, "custom-data": {"key1": "value1"}}'``
 
@@ -136,15 +140,17 @@ Unlike other proxies, Polipo needs to be restarted after alterations.
 tinyproxy
 ~~~~~~~~~
 If you get "403 Access violation" error message, you should allow all ports when CONNECT proxy
-is requested. To do this uncomment all `ConnectPort` lines in /etc/tinyproxy.conf and restart
-tinyproxy
+is requested. To do this uncomment all ``ConnectPort`` lines in /etc/tinyproxy.conf and restart
+tinyproxy.
 
 
 Profile
 =======
 To profile API performance:
+
   ``httperf -v --server hostname --port 80 --uri /notif --method GET --http-version 1.0 --hog --num-conns 10000 --rate 1000 --timeout 10``
   ``ab -v 1 -n 1000 -c 100 -s 10 http://hostname:port/notif``
 
 To debug the API on the wire:
+
   ``ssh -p 8522 user@host "sudo tcpdump -i any -U -s 0 -w - 'host 192.168.104.1 and tcp port 80 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'" | wireshark -k -i -``
